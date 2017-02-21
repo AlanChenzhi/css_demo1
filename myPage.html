@@ -22,58 +22,102 @@
             <table class="table table-hover">
               <caption>备忘录</caption>
               <tbody style="text-align: left;">
-                <tr>
-                  <td>1,写论文（1000字）</td>
-                </tr>
-                <tr>
-                  <td>2,跑步</td>
-                </tr>
-                <tr>
-                  <td>3,明天下午和小悦悦去逛街</td>
-                </tr>
-                <tr>
-                  <td>4,下周去做头发</td>
-                </tr>
               </tbody>
             </table>
           </div>
           <div style="margin-top: 10px;">
             <textarea class="form-control" rows="4" cols="38" placeholder="好记性不如烂笔头哟~" style="resize : none;"></textarea>
-            <button style="margin-top: 7px; float: left; margin-left: 20px;" type="button" class="btn btn-success">保存</button>
-            <button style="margin-top: 7px; float: left; margin-left: 20px;" type="button" class="btn btn-danger">清除</button>
+            <button style="margin-top: 7px; float: left; margin-left: 20px;" type="button" class="btn btn-success btn-lg remainderSave">保存</button>
+            <button style="margin-top: 23px; float: left; margin-left: 20px;" type="button" class="btn btn-info btn-sm remainderRewrite">重新输入</button>
+            <button style="margin-top: 23px; float: left; margin-left: 20px;" type="button" class="btn btn-danger btn-sm remainderClear">清除所有</button>
           </div>
       </div>
     </div>
   </body>
   <script type="text/javascript">
     var reminderDataParse = function(){
-      debugger
       var storage=window.localStorage;
-      var dataObj = storage.remainder.split("<cz>")
-      for (var i = dataObj.length - 1; i >= 0; i--) {
-        $("tbody").append("<tr><td>"+dataObj[i]+"</td></tr>");
-      }
+      var flag = true;
+      var i = 1;
+      while(flag){
+        var dataItem = storage.getItem("remainder"+i);
+        if(typeof(dataItem) == "undefined" || dataItem == null || dataItem == ""){
+          flag = false;
+          return;
+        };
+        $("tbody").append("<tr><td>"+i+", "+dataItem+"</td><td class='delBut' style='cursor: pointer;'>x</td></tr>");
+        i++;
+      };
     };
     var bindReminderSaveBut = function(){
-      $(".btn-success").click(function(){
-        $(".table td").each(function(i,item){
-          console.info(item.innerHTML);
-        });
+      $(".remainderSave").click(function(){
+        // $(".form-control").each(function(i,item){
+        //   console.info(item.innerHTML);
+        // });
+        var storage=window.localStorage;
+        var flag = true;
+        var i = 1;
+        while(flag){
+          var dataItem = storage.getItem("remainder"+i);
+          if(typeof(dataItem) == "undefined" || dataItem == null || dataItem == ""){
+            flag = false;
+          };
+          i++;
+        };
+        debugger
+        var contentItem = $(".form-control").val();
+        $(".form-control").val("");
+        if(contentItem == ""){
+          alert("还没写呢~ ");
+        }else{
+          var j = i-1;
+          storage.setItem("remainder"+j,contentItem);  
+          $("tbody").append("<tr><td>"+j+", "+contentItem+"</td><td class='delBut' style='cursor: pointer;'>x</td></tr>");  
+        };
+        
       });
     };
     var bindReminderClearBut = function(){
+      $(".remainderClear").click(function(){
+        var storage=window.localStorage;
+        storage.clear();
+        $("tbody").empty();
+        $(".form-control").val("");
+      });
+    };
+    var bindReminderRewriteBut = function(){
+      $(".remainderRewrite").click(function(){
+        $(".form-control").val("");
+        $(".form-control").focus();
+      });
+    };
+    var bindReminderItemDelBut = function(){
+      $("body").delegate(".delBut","click",function(){
+        alert("asdasd");
+      });
+    };
+    var bindReminderItemDelButShow = function(){
+      debugger
+      $("body").delegate(".","hover",function(){
+        console.info("hover");
+      });
     };
     $(function(){
       var storage=window.localStorage;
-      storage.clear();
-      var storageTestData = new Array();
-      storageTestData.push("hello world i am csy!"+"<cz>");
-      storageTestData.push("dbdbdbdbdbdbdbdbdbd!"+"<cz>");
-      storage.setItem("remainder",storageTestData);
-      console.log(storage.remainder);
+      // storage.clear();
+      // var storageTestData = new Array();
+      // storageTestData.push("hello world i am csy!"+"<cz>");
+      // storageTestData.push("dbdbdbdbdbdbdbdbdbd!"+"<cz>");
+      // storage.setItem("remainder1","hello world i am csy!");
+      // storage.setItem("remainder2","hello DB!");
 
       reminderDataParse();
       bindReminderSaveBut();
+      bindReminderClearBut();
+      bindReminderRewriteBut();
+      //
+      bindReminderItemDelBut();
+      bindReminderItemDelButShow();
     });
   </script>
 </html>
