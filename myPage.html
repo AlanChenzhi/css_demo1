@@ -34,9 +34,6 @@
                 <tr>
                   <td>4,下周去做头发</td>
                 </tr>
-
-                <tr>
-                </tr>
               </tbody>
             </table>
           </div>
@@ -50,7 +47,12 @@
   </body>
   <script type="text/javascript">
     var reminderDataParse = function(){
-
+      debugger
+      var storage=window.localStorage;
+      var dataObj = storage.remainder.split("<cz>")
+      for (var i = dataObj.length - 1; i >= 0; i--) {
+        $("tbody").append("<tr><td>"+dataObj[i]+"</td></tr>");
+      }
     };
     var bindReminderSaveBut = function(){
       $(".btn-success").click(function(){
@@ -60,18 +62,18 @@
       });
     };
     var bindReminderClearBut = function(){
-
     };
     $(function(){
-      bindReminderSaveBut();
-      debugger
       var storage=window.localStorage;
-      // storage.setItem("a","hello world");
-      //写入c字段
-      // storage.setItem("c",3);
       storage.clear();
-      console.log(typeof storage["c"]);
-      console.log(storage.a);
+      var storageTestData = new Array();
+      storageTestData.push("hello world i am csy!"+"<cz>");
+      storageTestData.push("dbdbdbdbdbdbdbdbdbd!"+"<cz>");
+      storage.setItem("remainder",storageTestData);
+      console.log(storage.remainder);
+
+      reminderDataParse();
+      bindReminderSaveBut();
     });
   </script>
 </html>
