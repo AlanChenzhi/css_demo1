@@ -11,6 +11,9 @@
      <link rel="stylesheet" href="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">  
      <script src="https://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
      <script src="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+     <style type="text/css">
+
+     </style>
   </head>
   
   <body>
@@ -25,7 +28,7 @@
               </tbody>
             </table>
           </div>
-          <div style="margin-top: 10px;">
+          <div style="margin-top: -10px;">
             <textarea class="form-control" rows="4" cols="38" placeholder="好记性不如烂笔头哟~" style="resize : none;"></textarea>
             <button style="margin-top: 7px; float: left; margin-left: 20px;" type="button" class="btn btn-success btn-lg remainderSave">保存</button>
             <button style="margin-top: 23px; float: left; margin-left: 20px;" type="button" class="btn btn-info btn-sm remainderRewrite">重新输入</button>
@@ -45,15 +48,12 @@
           flag = false;
           return;
         };
-        $("tbody").append("<tr><td>"+i+", "+dataItem+"</td><td class='delBut' style='cursor: pointer;'>x</td></tr>");
+        $("tbody").append("<tr class='remainder"+i+"'><td style='width:250px;'>"+i+", "+dataItem+"</td><td class='delBut ' style='cursor: pointer;'></td></tr>");
         i++;
       };
     };
     var bindReminderSaveBut = function(){
       $(".remainderSave").click(function(){
-        // $(".form-control").each(function(i,item){
-        //   console.info(item.innerHTML);
-        // });
         var storage=window.localStorage;
         var flag = true;
         var i = 1;
@@ -64,15 +64,14 @@
           };
           i++;
         };
-        debugger
         var contentItem = $(".form-control").val();
         $(".form-control").val("");
         if(contentItem == ""){
-          alert("还没写呢~ ");
+          console.info("输入为空");
         }else{
           var j = i-1;
           storage.setItem("remainder"+j,contentItem);  
-          $("tbody").append("<tr><td>"+j+", "+contentItem+"</td><td class='delBut' style='cursor: pointer;'>x</td></tr>");  
+          $("tbody").append("<tr class='remainder"+j+"'><td style='width:250px;'>"+j+", "+contentItem+"</td><td class='delBut ' style='cursor: pointer;'></td></tr>");  
         };
         
       });
@@ -93,24 +92,22 @@
     };
     var bindReminderItemDelBut = function(){
       $("body").delegate(".delBut","click",function(){
-        alert("asdasd");
+        $(this).parent().hide();
+        var storage=window.localStorage;
+        storage.removeItem($(this).parent().attr("class"));
       });
     };
     var bindReminderItemDelButShow = function(){
-      debugger
-      $("body").delegate(".","hover",function(){
-        console.info("hover");
+      $("body").delegate("tr","mouseover",function(event){
+        // $(this).find(".delBut").show();
+        $(this).find(".delBut").html("x");
+      });
+      $("body").delegate("tr","mouseout",function(event){
+        $(this).find(".delBut").html("");
       });
     };
     $(function(){
       var storage=window.localStorage;
-      // storage.clear();
-      // var storageTestData = new Array();
-      // storageTestData.push("hello world i am csy!"+"<cz>");
-      // storageTestData.push("dbdbdbdbdbdbdbdbdbd!"+"<cz>");
-      // storage.setItem("remainder1","hello world i am csy!");
-      // storage.setItem("remainder2","hello DB!");
-
       reminderDataParse();
       bindReminderSaveBut();
       bindReminderClearBut();
